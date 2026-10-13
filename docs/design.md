@@ -138,7 +138,7 @@ States: `Idle`, `Pending` (trigger held + button down, not yet moved past the th
 | `Pending`, left button up (trigger+click) | Option on: **swallow**, send `click{x,y}`. Option off: **replay** the down+up with `SendInput` (flagged as injected so the helper ignores its own events). Back to `Idle`. |
 | `Wheel`, right button down or Esc | **Swallow**, send `cancel`, go to `Idle` |
 | Trigger released during `Pending` | Treat as a plain click: replay it (or ping, if the option is on) |
-| Trigger released during `Wheel` | Send `cancel`, go to `Idle` (the matching button up will still be swallowed) |
+| Trigger released during `Wheel` | Send `wheelRelease` at the last pointer position, like a button up (a trackpad's three-finger drag sends the button up about a second late), go to `Idle` (the matching button up will still be swallowed) |
 | Toggle hotkey | **Swallow**, flip enabled, send `toggled{enabled}`. If disabled mid-drag, also send `cancel`. |
 | Watchdog: no mouse event for 10 s while in `Wheel` or `Pending` | Send `cancel`, go to `Idle` |
 

@@ -55,8 +55,8 @@ Updating from v0.4 or earlier: download the new version by hand once. From v0.5 
 
 | To | Do this |
 | --- | --- |
-| Ping | Hold **Alt**, drag, and let go on a slice |
-| Emote | Hold **Ctrl**, drag, and let go on an emote |
+| Ping | Hold **Alt**, drag, and let go of the mouse button or of Alt on a slice |
+| Emote | Hold **Ctrl**, drag, and let go of the mouse button or of Ctrl on an emote |
 | Cancel | Let go in the centre, right-click, or press **Esc** |
 | Pause or resume pinging | **Ctrl + Alt + P** |
 | Open settings | Click the tray icon |

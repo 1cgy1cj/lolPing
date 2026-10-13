@@ -275,7 +275,9 @@ void Decision::onKeyUp(const InputEvent& e, Result& r) {
       state_ = State::Idle;
     }
   } else if (state_ == State::Wheel) {
-    r.emits.push_back(Emit{Emit::Kind::Cancel});
+    // Letting go of the trigger picks the slice under the pointer, like letting go of the button (a trackpad's
+    // three-finger drag ends the button late). The wheel's dead zone still cancels; the button-up is swallowed.
+    r.emits.push_back(point(Emit::Kind::WheelRelease, mx_, my_, owner_));
     state_ = State::SwallowUp;
   }
 }
@@ -340,9 +342,13 @@ void Decision::onMouseMove(const InputEvent& e, Result& r) {
       state_ = State::Wheel;
       r.emits.push_back(point(Emit::Kind::WheelOpen, px_, py_, owner_));
       r.emits.push_back(point(Emit::Kind::WheelMove, e.x, e.y, owner_));
+      mx_ = e.x;
+      my_ = e.y;
     }
   } else if (state_ == State::Wheel) {
     r.emits.push_back(point(Emit::Kind::WheelMove, e.x, e.y, owner_));
+    mx_ = e.x;
+    my_ = e.y;
   }
 }
 

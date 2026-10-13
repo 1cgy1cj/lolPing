@@ -140,6 +140,8 @@ class Decision {
   Btn dragBtn_ = Btn::None;
   int px_ = 0;
   int py_ = 0;
+  int mx_ = 0;  // the pointer's last spot while the wheel is open
+  int my_ = 0;
   uint64_t lastMouseMs_ = 0;
 };
 

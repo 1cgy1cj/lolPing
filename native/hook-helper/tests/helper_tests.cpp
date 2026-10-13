@@ -188,11 +188,13 @@ static void test_escape_cancels_wheel() {
   CHECK(r.swallow && r.emits.empty());
 }
 
-static void test_trigger_released_during_wheel_cancels() {
+static void test_trigger_released_during_wheel_releases() {
   Decision d;
   openWheel(d);
   Result r = d.onEvent(ku(ALT));
-  CHECK(findEmit(r, Emit::Kind::Cancel) != nullptr);
+  CHECK(findEmit(r, Emit::Kind::Cancel) == nullptr);
+  const Emit* rel = findEmit(r, Emit::Kind::WheelRelease);
+  CHECK(rel != nullptr && rel->x == 130 && rel->y == 100 && rel->wheel == WheelKind::Ping);
   CHECK(d.state() == S::SwallowUp);
   CHECK(d.onEvent(mu(Btn::Left, 130, 100)).swallow);
   CHECK(d.state() == S::Idle);
@@ -730,14 +732,15 @@ static void test_pause_stops_both_wheels() {
   CHECK(!d.onEvent(mu(Btn::Left, 100, 100)).swallow);
 }
 
-static void test_releasing_emote_trigger_mid_wheel_cancels() {
+static void test_releasing_emote_trigger_mid_wheel_releases() {
   Decision d = withEmote();
   openEmoteWheel(d);
   d.onEvent(kd(ALT));  // the other wheel's trigger doesn't touch this gesture
-  CHECK(findEmit(d.onEvent(ku(ALT)), Emit::Kind::Cancel) == nullptr);
+  CHECK(findEmit(d.onEvent(ku(ALT)), Emit::Kind::WheelRelease) == nullptr);
   CHECK(d.state() == S::Wheel);
   Result r = d.onEvent(ku(CTRL));
-  CHECK(findEmit(r, Emit::Kind::Cancel) != nullptr);
+  const Emit* rel = findEmit(r, Emit::Kind::WheelRelease);
+  CHECK(rel != nullptr && rel->wheel == WheelKind::Emote);
   CHECK(d.state() == S::SwallowUp);
   CHECK(d.onEvent(mu(Btn::Left, 130, 100)).swallow);
   CHECK(d.state() == S::Idle);
@@ -925,7 +928,7 @@ int main() {
   test_right_click_cancels_wheel();
   test_right_click_with_alt_but_no_gesture_passes();
   test_escape_cancels_wheel();
-  test_trigger_released_during_wheel_cancels();
+  test_trigger_released_during_wheel_releases();
   test_trigger_released_during_pending_replays_click_after_mask();
   test_trigger_released_during_pending_pings_when_click_ping_on();
   test_alt_up_after_gesture_is_masked();
@@ -963,7 +966,7 @@ int main() {
   test_custom_emote_key_is_swallowed();
   test_mouse5_emote_beside_alt_ping();
   test_pause_stops_both_wheels();
-  test_releasing_emote_trigger_mid_wheel_cancels();
+  test_releasing_emote_trigger_mid_wheel_releases();
   test_mask_menu_keys_off_leaves_alt_up_alone();
   test_mac_keycodes_map_to_vks();
   test_mac_modifier_held();
